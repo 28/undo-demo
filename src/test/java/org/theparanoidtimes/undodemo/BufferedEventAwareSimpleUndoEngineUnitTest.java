@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BufferedEventAwareSimpleUndoEngineUnitTest {
+class BufferedEventAwareSimpleUndoEngineUnitTest {
     @Test
     void undoEngineWillSaveASimpleChange() {
         Environment environment = new Environment("Test");
@@ -24,11 +24,9 @@ public class BufferedEventAwareSimpleUndoEngineUnitTest {
 
         String firstChange = environment.appendToExisting("1");
         undoEngine.registerNewChange(environment, new GenericEvent(firstChange));
-        assertThat(undoEngine.performUndo()).isNull();
 
         String secondChange = environment.appendToExisting("2");
         undoEngine.registerNewChange(environment, new GenericEvent(secondChange));
-        assertThat(undoEngine.performUndo()).isNull();
 
         String thirdChange = environment.appendToExisting("3");
         undoEngine.registerNewChange(environment, new GenericEvent(thirdChange));

@@ -40,6 +40,7 @@ public class BufferedSimpleUndoEngine implements UndoEngine<GenericEvent> {
 
     @Override
     public GenericEvent performUndo() {
+        flushBuffer(); // flush the buffer on undo to refresh the counter
         if (undoStack.size() > 0)
             return undoStack.pop();
         else

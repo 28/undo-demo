@@ -48,6 +48,7 @@ public class BufferedEventAwareSimpleUndoEngine implements UndoEngine<Event> {
 
     @Override
     public GenericEvent performUndo() {
+        flushBuffer();
         if (undoStack.size() > 0)
             return undoStack.pop();
         else
