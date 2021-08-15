@@ -11,7 +11,9 @@ public record AddTextEvent(String textToAdd) implements Event {
     public void unapply(Environment environment) {
         String currentText = environment.getText();
         int lastChangeStartIndex = currentText.lastIndexOf(textToAdd);
-        String newText = currentText.substring(0, lastChangeStartIndex);
-        environment.setText(newText);
+        if (lastChangeStartIndex != -1) {
+            String newText = currentText.substring(0, lastChangeStartIndex);
+            environment.setText(newText);
+        }
     }
 }
