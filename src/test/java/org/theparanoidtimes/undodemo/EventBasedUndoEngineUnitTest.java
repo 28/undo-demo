@@ -11,7 +11,7 @@ class EventBasedUndoEngineUnitTest {
         Environment environment = new Environment("Test");
         EventBasedUndoEngine undoEngine = new EventBasedUndoEngine(2);
 
-        undoEngine.registerNewChange(environment, new WindowOpenEvent(environment.getText()));
+        undoEngine.registerNewChange(environment, new WindowOpenEvent("Test"));
         AddTextEvent addTextEvent = environment.addText("1");
         undoEngine.registerNewChange(environment, addTextEvent);
 
@@ -31,7 +31,7 @@ class EventBasedUndoEngineUnitTest {
         Environment environment = new Environment("Test");
         EventBasedUndoEngine undoEngine = new EventBasedUndoEngine(3);
 
-        undoEngine.registerNewChange(environment, new WindowOpenEvent(environment.getText()));
+        undoEngine.registerNewChange(environment, new WindowOpenEvent("Test"));
 
         AddTextEvent addTextEvent = environment.addText("1");
         undoEngine.registerNewChange(environment, addTextEvent);
@@ -62,7 +62,7 @@ class EventBasedUndoEngineUnitTest {
         Environment environment = new Environment("Test");
         EventBasedUndoEngine undoEngine = new EventBasedUndoEngine(2);
 
-        undoEngine.registerNewChange(environment, new WindowOpenEvent(environment.getText()));
+        undoEngine.registerNewChange(environment, new WindowOpenEvent("Test"));
 
         AddTextEvent addTextEvent = environment.addText("1");
         undoEngine.registerNewChange(environment, addTextEvent);
