@@ -4,11 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class BufferedEventAwareSimpleUndoEngineUnitTest {
+class BufferedSimpleUndoEngineTest {
+
     @Test
     void undoEngineWillSaveASimpleChange() {
         Environment environment = new Environment("Test");
-        BufferedEventAwareSimpleUndoEngine undoEngine = new BufferedEventAwareSimpleUndoEngine(1, 1);
+        BufferedSimpleUndoEngine undoEngine = new BufferedSimpleUndoEngine(1, 1);
 
         String firstChange = environment.appendToExisting("1");
         undoEngine.registerNewChange(environment, new GenericEvent(firstChange));
@@ -20,7 +21,7 @@ class BufferedEventAwareSimpleUndoEngineUnitTest {
     @Test
     void undoEngineWillFlushBufferWhenFull() {
         Environment environment = new Environment("Test");
-        BufferedEventAwareSimpleUndoEngine undoEngine = new BufferedEventAwareSimpleUndoEngine(1, 3);
+        BufferedSimpleUndoEngine undoEngine = new BufferedSimpleUndoEngine(1, 3);
 
         String firstChange = environment.appendToExisting("1");
         undoEngine.registerNewChange(environment, new GenericEvent(firstChange));
@@ -39,7 +40,7 @@ class BufferedEventAwareSimpleUndoEngineUnitTest {
     @Test
     void undoEngineWillSaveAndReturnChangesInOrderTheyAppeared() {
         Environment environment = new Environment("Test");
-        BufferedEventAwareSimpleUndoEngine undoEngine = new BufferedEventAwareSimpleUndoEngine(2, 2);
+        BufferedSimpleUndoEngine undoEngine = new BufferedSimpleUndoEngine(2, 2);
 
         String firstChange = environment.appendToExisting("1");
         undoEngine.registerNewChange(environment, new GenericEvent(firstChange));
@@ -65,7 +66,7 @@ class BufferedEventAwareSimpleUndoEngineUnitTest {
     @Test
     void undoEngineWillHonorTheStackCapacity() {
         Environment environment = new Environment("Test");
-        BufferedEventAwareSimpleUndoEngine undoEngine = new BufferedEventAwareSimpleUndoEngine(2, 2);
+        BufferedSimpleUndoEngine undoEngine = new BufferedSimpleUndoEngine(2, 2);
 
         String firstChange = environment.appendToExisting("1");
         undoEngine.registerNewChange(environment, new GenericEvent(firstChange));
@@ -93,28 +94,5 @@ class BufferedEventAwareSimpleUndoEngineUnitTest {
 
         GenericEvent thirdUndo = undoEngine.performUndo();
         assertThat(thirdUndo).isNull();
-    }
-
-    @Test
-    void undoEngineWillFlushBufferOnFocusLostEvent() {
-        Environment environment = new Environment("Test");
-        BufferedEventAwareSimpleUndoEngine undoEngine = new BufferedEventAwareSimpleUndoEngine(2, 2);
-
-        String firstChange = environment.appendToExisting("1");
-        undoEngine.registerNewChange(environment, new GenericEvent(firstChange));
-
-        String secondChange = environment.appendToExisting("2");
-        undoEngine.registerNewChange(environment, new GenericEvent(secondChange));
-
-        String thirdChange = environment.appendToExisting("3");
-        undoEngine.registerNewChange(environment, new GenericEvent(thirdChange));
-
-        undoEngine.registerNewChange(environment, new FocusLostEvent());
-
-        GenericEvent firstUndo = undoEngine.performUndo();
-        assertThat(firstUndo.text()).isEqualTo(thirdChange);
-
-        GenericEvent secondUndo = undoEngine.performUndo();
-        assertThat(secondUndo.text()).isEqualTo(secondChange);
     }
 }
