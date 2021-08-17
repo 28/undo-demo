@@ -8,9 +8,10 @@ class EnvironmentWithEventBasedUndoEngineTest {
 
     @Test
     void environmentWillAddTextAndPerformUndo() {
-        Environment environment = new Environment("Test");
+        String initialText = "Test";
+        Environment environment = new Environment(initialText);
         EventBasedUndoEngine undoEngine = new EventBasedUndoEngine(50);
-        undoEngine.registerNewChange(environment, new WindowOpenEvent(environment.getText()));
+        undoEngine.registerNewChange(environment, new WindowOpenEvent(initialText));
 
         AddTextEvent addTextEvent = environment.addText("New");
         undoEngine.registerNewChange(environment, addTextEvent);
@@ -18,14 +19,15 @@ class EnvironmentWithEventBasedUndoEngineTest {
 
         Event event = undoEngine.performUndo();
         event.unapply(environment);
-        assertThat(environment.getText()).isEqualTo("Test");
+        assertThat(environment.getText()).isEqualTo(initialText);
     }
 
     @Test
     void environmentWillRemoveTextAndPerformUndo() {
-        Environment environment = new Environment("Test");
+        String initialText = "Test";
+        Environment environment = new Environment(initialText);
         EventBasedUndoEngine undoEngine = new EventBasedUndoEngine(50);
-        undoEngine.registerNewChange(environment, new WindowOpenEvent(environment.getText()));
+        undoEngine.registerNewChange(environment, new WindowOpenEvent(initialText));
 
         RemoveTextEvent removeTextEvent = environment.removeText(0, 3);
         undoEngine.registerNewChange(environment, removeTextEvent);
@@ -34,14 +36,15 @@ class EnvironmentWithEventBasedUndoEngineTest {
 
         Event event = undoEngine.performUndo();
         event.unapply(environment);
-        assertThat(environment.getText()).isEqualTo("Test");
+        assertThat(environment.getText()).isEqualTo(initialText);
     }
 
     @Test
     void environmentWillApplyAndUnApplyChangesAsTheyAppear() {
-        Environment environment = new Environment("Test");
+        String initialText = "Test";
+        Environment environment = new Environment(initialText);
         EventBasedUndoEngine undoEngine = new EventBasedUndoEngine(50);
-        undoEngine.registerNewChange(environment, new WindowOpenEvent(environment.getText()));
+        undoEngine.registerNewChange(environment, new WindowOpenEvent(initialText));
 
         AddTextEvent addTextEvent = environment.addText("Test");
         undoEngine.registerNewChange(environment, addTextEvent);
@@ -61,10 +64,10 @@ class EnvironmentWithEventBasedUndoEngineTest {
 
         Event secondUndo = undoEngine.performUndo();
         secondUndo.unapply(environment);
-        assertThat(environment.getText()).isEqualTo("Test");
+        assertThat(environment.getText()).isEqualTo(initialText);
 
         Event thirdUndo = undoEngine.performUndo();
         thirdUndo.unapply(environment);
-        assertThat(environment.getText()).isEqualTo("");
+        assertThat(environment.getText()).isEmpty();
     }
 }

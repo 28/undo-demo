@@ -8,10 +8,11 @@ class EventBasedUndoEngineTest {
 
     @Test
     void undoEngineWillSaveAndRetrieveAddTextEventChange() {
-        Environment environment = new Environment("Test");
+        String initialText = "Test";
+        Environment environment = new Environment(initialText);
         EventBasedUndoEngine undoEngine = new EventBasedUndoEngine(2);
 
-        undoEngine.registerNewChange(environment, new WindowOpenEvent("Test"));
+        undoEngine.registerNewChange(environment, new WindowOpenEvent(initialText));
         AddTextEvent addTextEvent = environment.addText("1");
         undoEngine.registerNewChange(environment, addTextEvent);
 
@@ -23,15 +24,16 @@ class EventBasedUndoEngineTest {
         Event secondUndo = undoEngine.performUndo();
         assertThat(secondUndo).isInstanceOf(WindowOpenEvent.class);
         WindowOpenEvent woe = (WindowOpenEvent) secondUndo;
-        assertThat(woe.initialText()).isEqualTo("Test");
+        assertThat(woe.initialText()).isEqualTo(initialText);
     }
 
     @Test
     void undoEngineWillSaveAndRetrieveEventInOrderTheyAppear() {
-        Environment environment = new Environment("Test");
+        String initialText = "Test";
+        Environment environment = new Environment(initialText);
         EventBasedUndoEngine undoEngine = new EventBasedUndoEngine(3);
 
-        undoEngine.registerNewChange(environment, new WindowOpenEvent("Test"));
+        undoEngine.registerNewChange(environment, new WindowOpenEvent(initialText));
 
         AddTextEvent addTextEvent = environment.addText("1");
         undoEngine.registerNewChange(environment, addTextEvent);
@@ -54,15 +56,16 @@ class EventBasedUndoEngineTest {
         Event thirdUndo = undoEngine.performUndo();
         assertThat(thirdUndo).isInstanceOf(WindowOpenEvent.class);
         WindowOpenEvent woe = (WindowOpenEvent) thirdUndo;
-        assertThat(woe.initialText()).isEqualTo("Test");
+        assertThat(woe.initialText()).isEqualTo(initialText);
     }
 
     @Test
     void undoEngineWillHonorTheCapacityLimit() {
-        Environment environment = new Environment("Test");
+        String initialText = "Test";
+        Environment environment = new Environment(initialText);
         EventBasedUndoEngine undoEngine = new EventBasedUndoEngine(2);
 
-        undoEngine.registerNewChange(environment, new WindowOpenEvent("Test"));
+        undoEngine.registerNewChange(environment, new WindowOpenEvent(initialText));
 
         AddTextEvent addTextEvent = environment.addText("1");
         undoEngine.registerNewChange(environment, addTextEvent);
