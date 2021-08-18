@@ -51,7 +51,7 @@ class EnvironmentWithEventBasedUndoEngineTest {
         assertThat(environment.getText()).isEqualTo("TestTest");
         assertThat(addTextEvent.textToAdd()).isEqualTo("Test");
 
-        undoEngine.registerNewChange(environment, new FocusLostEvent());
+        undoEngine.registerNewChange(environment, new FocusLostEvent()); // ignored by the engine
 
         RemoveTextEvent removeTextEvent = environment.removeText(3, 4);
         undoEngine.registerNewChange(environment, removeTextEvent);

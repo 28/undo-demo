@@ -20,8 +20,9 @@ public class EventBasedUndoEngine implements UndoEngine<Event> {
         } else if (change instanceof RemoveTextEvent rte) {
             pushToStack(rte);
         } else if (change instanceof WindowOpenEvent woe) {
-            // for example this event represents the initial window open
-            // and can be used to save initial state if necessary
+            // The initial text will be pushed to the stack,
+            // but it can be recreated even without saving it.
+            // With it we can udo all the way back to the empty screen if needed.
             pushToStack(woe);
         } else if (change instanceof FocusLostEvent) {
             // ignored in this implementation, since all changes are saved always (no buffer)

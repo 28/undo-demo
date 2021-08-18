@@ -24,13 +24,13 @@ class BufferedSimpleUndoEngineTest {
         BufferedSimpleUndoEngine undoEngine = new BufferedSimpleUndoEngine(1, 3);
 
         String firstChange = environment.appendToExisting("1");
-        undoEngine.registerNewChange(environment, new GenericEvent(firstChange));
+        undoEngine.registerNewChange(environment, new GenericEvent(firstChange)); // buffer = 1
 
         String secondChange = environment.appendToExisting("2");
-        undoEngine.registerNewChange(environment, new GenericEvent(secondChange));
+        undoEngine.registerNewChange(environment, new GenericEvent(secondChange)); // buffer = 2
 
         String thirdChange = environment.appendToExisting("3");
-        undoEngine.registerNewChange(environment, new GenericEvent(thirdChange));
+        undoEngine.registerNewChange(environment, new GenericEvent(thirdChange)); // buffer = 3
 
         GenericEvent undoEvent = undoEngine.performUndo();
         assertThat(undoEvent.text()).isEqualTo(thirdChange);
@@ -43,16 +43,16 @@ class BufferedSimpleUndoEngineTest {
         BufferedSimpleUndoEngine undoEngine = new BufferedSimpleUndoEngine(2, 2);
 
         String firstChange = environment.appendToExisting("1");
-        undoEngine.registerNewChange(environment, new GenericEvent(firstChange));
+        undoEngine.registerNewChange(environment, new GenericEvent(firstChange)); // buffer = 1, capacity = 0
 
         String secondChange = environment.appendToExisting("2");
-        undoEngine.registerNewChange(environment, new GenericEvent(secondChange));
+        undoEngine.registerNewChange(environment, new GenericEvent(secondChange));  // buffer = 2, capacity = 0
 
         String thirdChange = environment.appendToExisting("3");
-        undoEngine.registerNewChange(environment, new GenericEvent(thirdChange));
+        undoEngine.registerNewChange(environment, new GenericEvent(thirdChange));  // buffer = 1, capacity = 1
 
         String fourthChange = environment.appendToExisting("4");
-        undoEngine.registerNewChange(environment, new GenericEvent(fourthChange));
+        undoEngine.registerNewChange(environment, new GenericEvent(fourthChange));  // buffer = 2, capacity = 1
 
         GenericEvent firstUndo = undoEngine.performUndo();
         assertThat(firstUndo.text()).isEqualTo(fourthChange);
