@@ -2,6 +2,8 @@
 
 A project that aims to present how an undo feature in text-based environment works using JUnit tests.
 
+This is a code project that accompanies this [blog post](https://theparanoidtimes.org/blog/2021/08/21/undo-functionality-how-to/).
+
 ## License
 
 Copyright (c) 2021 Dejan Josifović
