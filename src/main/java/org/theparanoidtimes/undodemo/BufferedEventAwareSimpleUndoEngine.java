@@ -7,7 +7,7 @@ public class BufferedEventAwareSimpleUndoEngine implements UndoEngine<Event> {
     private final int capacity;
     private final int bufferSize;
 
-    private final Stack<GenericEvent> undoStack = new Stack<>();
+    private final Stack<Event> undoStack = new Stack<>();
     private int buffer;
 
     public BufferedEventAwareSimpleUndoEngine(int capacity, int bufferSize) {
@@ -18,14 +18,20 @@ public class BufferedEventAwareSimpleUndoEngine implements UndoEngine<Event> {
     @Override
     public void registerNewChange(Environment environment, Event change) {
         if (change instanceof GenericEvent) {
-            GenericEvent lastEntry = lastEntry();
-            if (lastEntry == null || !environment.getText().equals(lastEntry.text())) {
+            Event lastEntry = lastEntry();
+            if (lastEntry == null || !environment.getText().equals(extractText(lastEntry))) { // a helper method to get the saved text
                 if (buffer + 1 == bufferSize) {
                     pushToStack(new GenericEvent(environment.getText())); // 'collect' all changes
                     flushBuffer();
                 } else
                     buffer++;
             }
+        } else if (change instanceof WindowOpenEvent) {
+            // Store initial changes without checking the buffer since
+            // the initial state must be saved.
+            // This is expected to be called only once so there will be
+            // no interference with other (generic) events.
+            pushToStack(change);
         } else if (change instanceof FocusLostEvent) {
             if (buffer > 0) {
                 pushToStack(new GenericEvent(environment.getText())); // 'collect' all changes
@@ -35,7 +41,7 @@ public class BufferedEventAwareSimpleUndoEngine implements UndoEngine<Event> {
             throw new IllegalStateException();
     }
 
-    private void pushToStack(GenericEvent event) {
+    private void pushToStack(Event event) {
         if (undoStack.size() + 1 > capacity) {
             undoStack.remove(0);
         }
@@ -46,8 +52,17 @@ public class BufferedEventAwareSimpleUndoEngine implements UndoEngine<Event> {
         buffer = 0;
     }
 
+    private String extractText(Event event) {
+        if (event instanceof WindowOpenEvent woe)
+            return woe.initialText();
+        else if (event instanceof GenericEvent ge)
+            return ge.text();
+        else
+            return null;
+    }
+
     @Override
-    public GenericEvent performUndo() {
+    public Event performUndo() {
         flushBuffer();
         if (undoStack.size() > 0)
             return undoStack.pop();
@@ -56,7 +71,7 @@ public class BufferedEventAwareSimpleUndoEngine implements UndoEngine<Event> {
     }
 
     @Override
-    public GenericEvent lastEntry() {
+    public Event lastEntry() {
         if (undoStack.size() > 0)
             return undoStack.peek();
         else
