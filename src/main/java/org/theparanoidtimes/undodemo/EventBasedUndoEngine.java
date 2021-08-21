@@ -15,17 +15,20 @@ public class EventBasedUndoEngine implements UndoEngine<Event> {
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public void registerNewChange(Environment environment, Event change) {
-        if (change instanceof AddTextEvent ate) {
-            pushToStack(ate);
-        } else if (change instanceof RemoveTextEvent rte) {
-            pushToStack(rte);
-        } else if (change instanceof WindowOpenEvent woe) {
-            // The initial text will be pushed to the stack,
-            // but it can be recreated even without saving it.
-            // With it we can udo all the way back to the empty screen if needed.
-            pushToStack(woe);
-        } else if (change instanceof FocusLostEvent) {
-            // ignored in this implementation, since all changes are saved always (no buffer)
+        Event lastEntry = lastEntry();
+        if (lastEntry == null || !lastEntry.equals(change)) { // since events carry the changes, equals is simpler
+            if (change instanceof AddTextEvent ate) {
+                pushToStack(ate);
+            } else if (change instanceof RemoveTextEvent rte) {
+                pushToStack(rte);
+            } else if (change instanceof WindowOpenEvent woe) {
+                // The initial text will be pushed to the stack,
+                // but it can be recreated even without saving it.
+                // With it we can udo all the way back to the empty screen if needed.
+                pushToStack(woe);
+            } else if (change instanceof FocusLostEvent) {
+                // ignored in this implementation, since all changes are saved always (no buffer)
+            }
         }
     }
 
